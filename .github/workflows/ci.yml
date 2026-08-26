@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        # スクレイピング用の重い依存（playwright など）はテストに不要
+        run: pip install pyyaml pytest
+      - name: Run tests
+        run: pytest -q
+      - name: Byte-compile all sources
+        run: python -m compileall -q engine main.py tools
